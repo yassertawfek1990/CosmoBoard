@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drag & Drop Training Analytics</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --surface2: #faf9f6;
+    --border: #e4e1d8;
+    --border-light: #eeece6;
+    --text: #1a1917;
+    --text-muted: #6b6860;
+    --text-hint: #a09d96;
+    --accent: #2563eb;
+    --accent-bg: #eff4ff;
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --red: #dc2626;
+    --red-bg: #fef2f2;
+    --amber: #d97706;
+    --radius: 10px;
+    --radius-lg: 14px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-lg: 0 20px 60px rgba(0,0,0,0.18), 0 4px 16px rgba(0,0,0,0.08);
+  }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; }
+  .logo-icon {
+    width: 30px; height: 30px; background: var(--accent);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  }
+  .logo-icon svg { width: 16px; height: 16px; fill: white; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .header-tag {
+    font-size: 12px; font-weight: 500; color: var(--text-muted);
+    background: var(--surface2); border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 20px;
+  }
+  .refresh-btn {
+    width: 34px; height: 34px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--surface);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted); transition: all .15s;
+  }
+  .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .refresh-btn svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ── Main ── */
+  main { max-width: 1100px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* ── Loading screen ── */
+  #loading-screen {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 60vh; gap: 16px; color: var(--text-muted);
+  }
+  .big-spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-label { font-size: 14px; font-weight: 500; }
+  .loading-sub { font-size: 13px; color: var(--text-hint); }
+
+  /* ── Error screen ── */
+  #error-screen {
+    display: none; text-align: center;
+    padding: 64px 32px;
+  }
+  #error-screen .err-icon { font-size: 40px; margin-bottom: 16px; }
+  #error-screen h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  #error-screen p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+  .retry-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 40px; padding: 0 20px;
+    background: var(--accent); color: #fff; border: none; border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer;
+    transition: background .15s;
+  }
+  .retry-btn:hover { background: #1d4ed8; }
+
+  /* ── Dashboard ── */
+  #dashboard { display: none; }
+  #dashboard.on { display: block; }
+
+  .section-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .section-head h2 { font-size: 17px; font-weight: 600; }
+  .section-head p { font-size: 13px; color: var(--text-muted); }
+
+  /* Stats grid */
+  .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 28px; }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow);
+  }
+  .stat-label { font-size: 11px; font-weight: 500; color: var(--text-hint); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+  .stat-value { font-size: 26px; font-weight: 600; line-height: 1; }
+  .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+  /* Table */
+  .table-wrap {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    font-size: 11px; font-weight: 500; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--text-hint);
+    padding: 10px 18px; text-align: left;
+    background: var(--surface2); border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  thead th.r { text-align: right; }
+  tbody tr {
+    cursor: pointer; border-bottom: 1px solid var(--border-light);
+    transition: background .12s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #f0f4ff; }
+  tbody td { padding: 14px 18px; vertical-align: middle; }
+  tbody td.r { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .rank-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 7px;
+    font-size: 12px; font-weight: 600;
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .r1 { background: #fef2f2; border-color: #fca5a5; color: var(--red); }
+  .r2 { background: #fff7ed; border-color: #fdba74; color: var(--amber); }
+  .r3 { background: #fffbeb; border-color: #fcd34d; color: #92400e; }
+
+  .q-text { font-weight: 500; font-size: 13px; line-height: 1.4; }
+
+  .slide-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 20px;
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .slide-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+  .bar-wrap { display: flex; align-items: center; gap: 10px; }
+  .bar-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; min-width: 80px; }
+  .bar-fill { height: 100%; border-radius: 3px; transition: width .5s ease; }
+  .bar-val { font-size: 13px; font-weight: 600; min-width: 42px; text-align: right; font-variant-numeric: tabular-nums; }
+
+  .arrow-icon { color: var(--text-hint); display: flex; align-items: center; flex-shrink: 0; }
+  .arrow-icon svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ── Modal overlay ── */
+  #modal-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(15,15,15,0.55);
+    backdrop-filter: blur(3px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity .22s ease;
+    padding: 24px;
+  }
+  #modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--surface);
+    border-radius: 18px;
+    box-shadow: var(--shadow-lg);
+    width: 100%; max-width: 860px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    transform: translateY(16px) scale(0.98);
+    transition: transform .25s cubic-bezier(.34,1.3,.64,1), opacity .22s ease;
+    opacity: 0;
+  }
+  #modal-overlay.open .modal { transform: translateY(0) scale(1); opacity: 1; }
+
+  /* Modal header */
+  .modal-header {
+    padding: 18px 18px 15px;
+    border-bottom: 1px solid var(--border-light);
+    display: flex; align-items: flex-start; gap: 16px;
+    position: sticky; top: 0; background: var(--surface);
+    border-radius: 18px 18px 0 0;
+    z-index: 2;
+  }
+  .modal-rank {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; flex-shrink: 0;
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted);
+  }
+  .modal-rank.r1 { background: #fef2f2; border-color: #fca5a5; color: var(--red); }
+  .modal-rank.r2 { background: #fff7ed; border-color: #fdba74; color: var(--amber); }
+  .modal-rank.r3 { background: #fffbeb; border-color: #fcd34d; color: #92400e; }
+  .modal-title-wrap { flex: 1; }
+  .modal-q { font-size: 16px; font-weight: 600; line-height: 1.4; margin-bottom: 6px; }
+  .modal-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .modal-close {
+    width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border);
+    background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted); transition: all .15s; flex-shrink: 0;
+    font-size: 18px; line-height: 1;
+  }
+  .modal-close:hover { background: var(--red-bg); border-color: #fca5a5; color: var(--red); }
+
+  /* Modal body */
+  .modal-body { padding: 11px 22px 11px; }
+
+  /* Score banner */
+  .score-banner {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 12px;
+    margin-bottom: 24px;
+  }
+  .score-tile {
+    border-radius: 12px; padding: 8px 18px; text-align: center;
+    border: 1px solid var(--border-light);
+  }
+  .score-tile.avg { background: var(--surface2); }
+  .score-tile.correct { background: var(--green-bg); border-color: #86efac; }
+  .score-tile.wrong { background: var(--red-bg); border-color: #fca5a5; }
+  .tile-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; color: var(--text-hint); margin-bottom: 6px; }
+  .tile-num { font-size: 32px; font-weight: 700; line-height: 1; }
+  .score-tile.avg .tile-num { color: var(--text); }
+  .score-tile.correct .tile-num { color: var(--green); }
+  .score-tile.wrong .tile-num { color: var(--red); }
+  .tile-sub { font-size: 12px; margin-top: 4px; color: var(--text-muted); }
+
+  /* Two-col layout */
+  .modal-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+
+  .panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden;
+  }
+  .panel-head { padding: 14px 18px; font-size: 13px; font-weight: 600; border-bottom: 1px solid var(--border-light); }
+  .panel-body { padding: 16px 18px; }
+
+  /* Breakdown table */
+  .bk-table { width: 100%; border-collapse: collapse; }
+  .bk-table th {
+    font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--text-hint); padding: 8px 14px; text-align: left;
+    background: var(--surface2); border-bottom: 1px solid var(--border-light);
+  }
+  .bk-table th.r { text-align: right; }
+  .bk-table td { padding: 11px 14px; font-size: 13px; border-bottom: 1px solid var(--border-light); vertical-align: middle; }
+  .bk-table tr:last-child td { border-bottom: none; }
+  .bk-table td.r { text-align: right; }
+  .bk-table tr.correct-row { background: var(--green-bg); }
+
+  .correct-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 12px; font-weight: 500; color: var(--green);
+    background: #dcfce7; border: 1px solid #86efac;
+    padding: 3px 9px; border-radius: 20px;
+  }
+  .correct-badge svg { width: 11px; height: 11px; stroke: var(--green); stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  /* Nav buttons */
+  .modal-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 24px; padding-top: 15px;
+    border-top: 1px solid var(--border-light);
+  }
+  .nav-btn {
+    display: flex; align-items: center; gap: 7px;
+    height: 38px; padding: 0 16px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+    color: var(--text-muted); cursor: pointer; transition: all .15s;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .nav-btn:disabled { opacity: .35; cursor: not-allowed; }
+  .nav-btn svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .nav-pos { font-size: 13px; color: var(--text-muted); }
+
+  /* Product image */
+  .img-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  .img-panel .panel-head { padding: 14px 18px; font-size: 13px; font-weight: 600; border-bottom: 1px solid var(--border-light); }
+  .img-panel img { width: 100%; display: block; object-fit: contain; max-height: 320px; background: var(--surface2); }
+  .img-panel .img-placeholder { padding: 32px; text-align: center; color: var(--text-hint); font-size: 13px; background: var(--surface2); }
+
+  /* Make modal wider when image present */
+  .modal { max-width: 980px; }
+
+  /* 3-col layout for modal when image exists */
+  .modal-cols { display: grid; gap: 20px; align-items: start; }
+  .modal-cols.with-image { grid-template-columns: 1fr 1fr 1fr; }
+  .modal-cols.no-image   { grid-template-columns: 1fr 1fr; }
+
+  @media (max-width: 680px) {
+    .stats-grid { grid-template-columns: repeat(2,1fr); }
+    .modal-cols.with-image, .modal-cols.no-image { grid-template-columns: 1fr; }
+    .score-banner { grid-template-columns: repeat(3,1fr); gap: 8px; }
+    header { padding: 0 16px; }
+    main { padding: 20px 16px 48px; }
+    .modal-header { padding: 18px 18px 14px; }
+    .modal-body { padding: 18px 18px 22px; }
+    #modal-overlay { padding: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="5" height="5" rx="1"/>
+        <rect x="9" y="2" width="5" height="5" rx="1"/>
+        <rect x="2" y="9" width="5" height="5" rx="1"/>
+        <rect x="9" y="11.5" width="5" height="1.5" rx=".75"/>
+        <rect x="11" y="9" width="1.5" height="5" rx=".75"/>
+      </svg>
+    </div>
+    Training Analytics
+  </div>
+  <div class="header-right">
+    <span class="header-tag">Trainer Dashboard</span>
+    <button class="refresh-btn" onclick="init()" title="Refresh data">
+      <svg viewBox="0 0 16 16"><path d="M13.5 8a5.5 5.5 0 1 1-1.1-3.3"/><path d="M13.5 2v3h-3"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- Loading -->
+  <div id="loading-screen">
+    <div class="big-spinner"></div>
+    <div class="loading-label">Loading training data…</div>
+    <div class="loading-sub">Fetching all 5 slides from Google Sheets</div>
+  </div>
+
+  <!-- Error -->
+  <div id="error-screen">
+    <div class="err-icon">⚠️</div>
+    <h3>Could not load data</h3>
+    <p id="error-msg">There was a problem connecting to Google Sheets.</p>
+    <button class="retry-btn" onclick="init()">Try again</button>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard">
+
+    <div class="section-head">
+      <h2>Question Performance Rankings</h2>
+      <p>Sorted weakest first — click any row for full breakdown</p>
+    </div>
+
+    <div class="stats-grid" id="stats-grid"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:46px">#</th>
+            <th>Question</th>
+            <th>Slide</th>
+            <th class="r">Correct</th>
+            <th class="r">Wrong</th>
+            <th style="min-width:200px">Avg Score</th>
+            <th style="width:30px"></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+</main>
+
+<!-- Modal -->
+<div id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modal">
+
+    <div class="modal-header">
+      <div class="modal-rank" id="m-rank"></div>
+      <div class="modal-title-wrap">
+        <div class="modal-q" id="m-q"></div>
+        <div class="modal-meta" id="m-meta"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="score-banner">
+        <div class="score-tile avg">
+          <div class="tile-label">Avg Score</div>
+          <div class="tile-num" id="m-avg"></div>
+          <div class="tile-sub">out of 100%</div>
+        </div>
+        <div class="score-tile correct">
+          <div class="tile-label">Correct</div>
+          <div class="tile-num" id="m-correct"></div>
+          <div class="tile-sub">responses</div>
+        </div>
+        <div class="score-tile wrong">
+          <div class="tile-label">Wrong</div>
+          <div class="tile-num" id="m-wrong"></div>
+          <div class="tile-sub">responses</div>
+        </div>
+      </div>
+
+      <div class="modal-cols no-image" id="modal-cols">
+        <div class="panel">
+          <div class="panel-head">Response distribution</div>
+          <div class="panel-body">
+            <div style="position:relative;height:200px">
+              <canvas id="m-chart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">Option breakdown</div>
+          <table class="bk-table" id="m-table">
+            <thead><tr><th>Option</th><th class="r">Count</th><th class="r">Share</th></tr></thead>
+            <tbody id="m-tbody"></tbody>
+          </table>
+        </div>
+        <div class="img-panel" id="img-panel" style="display:none">
+          <div class="panel-head" id="img-panel-head">Product label</div>
+          <div id="img-container"></div>
+        </div>
+      </div>
+
+      <div class="modal-nav">
+        <button class="nav-btn" id="nav-prev" onclick="navModal(-1)">
+          <svg viewBox="0 0 14 14"><path d="M9 2L4 7l5 5"/></svg>
+          Previous
+        </button>
+        <span class="nav-pos" id="nav-pos"></span>
+        <button class="nav-btn" id="nav-next" onclick="navModal(1)">
+          Next
+          <svg viewBox="0 0 14 14"><path d="M5 2l5 5-5 5"/></svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ── Config ── */
+const SHEET_ID = '1aCfh1gBU88zDzxON2iQAuyQIiuvN2NrXTKGQWAoa2lc';
+
+const SLIDES = [
+  {
+    name:'Drag_and_Drop_1', label:'Slide 1 – Actives', color:'#6366f1',
+    choices:['Glycolic','Salicylic','Retinol','Licorice']
+  },
+  {
+    name:'Drag_and_Drop_2', label:'Slide 2 – Soothers', color:'#0ea5e9',
+    choices:['Centella','Niacinamide','Enoxolone','Tea Tree']
+  },
+  {
+    name:'Drag_and_Drop_3', label:'Slide 3 – Treatments', color:'#f59e0b',
+    choices:['Sulfur','Zinc','Hyaluronic','Urea']
+  },
+  {
+    name:'Drag_and_Drop_4', label:'Slide 4 – Barrier', color:'#10b981',
+    choices:['Ceramides','Squalane','Petrolatum','Silicones']
+  },
+  {
+    name:'Drag_and_Drop_5', label:'Slide 5 – Brighteners', color:'#ec4899',
+    choices:['Vitamin C','Azelaic Acid','Alpha Arbutin','Peptides']
+  }
+];
+
+/* ── State ── */
+let sortedRows = [];
+let modalIdx = null;
+let modalChart = null;
+let imageMap = {};
+
+/* ── Helpers ── */
+const $= id => document.getElementById(id);
+const esc = s => { const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; };
+
+/* ── Fetch via opensheet ── */
+async function fetchSlide(slide, si){
+  const url = `https://opensheet.elk.sh/${SHEET_ID}/${encodeURIComponent(slide.name)}`;
+  const resp = await fetch(url);
+  if(!resp.ok) throw new Error(`Tab "${slide.name}" returned ${resp.status}`);
+  const data = await resp.json();
+  if(data[0])
+  return data.slice(0,4).map((row,qi)=>{
+    const rkeys = Object.keys(row);
+    const find = (...names) => {
+      for(const n of names){
+        const k = rkeys.find(k=>k.trim().toLowerCase()===n.toLowerCase());
+        if(k && row[k]!==undefined && row[k]!=='') return row[k];
+      }
+      return '';
+    };
+    const cc={};
+    slide.choices.forEach(c=>{
+      const k = rkeys.find(k=>k.trim().toLowerCase()===c.toLowerCase());
+      cc[c] = k ? parseInt(row[k])||0 : 0;
+    });
+    const sumC   = parseInt(find('Sum Correct','SumCorrect'))||0;
+    const sumW   = parseInt(find('Sum Wrong','SumWrong'))||0;
+    const avg    = parseFloat(find('Average'))||0;
+    /* Clean the correct answer value:
+       Strip any "drag_drop_" / "Drag_Drop_" prefix pattern, then fuzzy-match
+       against the choices list (lowercase, first-word, or closest substring). */
+    const rawCorrect = find('Correct Answer','CorrectAnswer','correct_answer','correct').trim();
+    const cleaned = rawCorrect
+      .replace(/_/g,' ')
+      .replace(/\b(drag|drop)\b/gi,'')
+      .replace(/\s+/g,' ')
+      .trim()
+      .toLowerCase();
+    const matchChoice = choices => {
+      /* 1. exact lowercase match */
+      let m = choices.find(c=>c.toLowerCase()===cleaned);
+      if(m) return m;
+      /* 2. cleaned starts with choice or choice starts with cleaned */
+      m = choices.find(c=>cleaned.startsWith(c.toLowerCase())||c.toLowerCase().startsWith(cleaned));
+      if(m) return m;
+      /* 3. any word in cleaned matches any word in choice */
+      const words = cleaned.split(' ').filter(Boolean);
+      m = choices.find(c=>words.some(w=>c.toLowerCase().includes(w)||w.includes(c.toLowerCase().split(' ')[0])));
+      if(m) return m;
+      /* 4. fallback: first choice */
+      return choices[qi] || choices[0];
+    };
+    const correct = matchChoice(slide.choices);
+    const text = correct;
+    return { si, label:slide.label, color:slide.color, qi,
+      text, choices:slide.choices, cc, correct, sumC, sumW, avg };
+  });
+}
+
+/* ── Fetch images tab ── */
+async function fetchImages(){
+  try{
+    const url = `https://opensheet.elk.sh/${SHEET_ID}/Images`;
+    const resp = await fetch(url);
+    if(!resp.ok){ console.warn('[Images] bad status:', resp.status); return; }
+    const data = await resp.json();
+    data.forEach(row=>{
+      const rkeys = Object.keys(row);
+      const pKey = rkeys.find(k=>k.trim().toLowerCase()==='product');
+      const lKey = rkeys.find(k=>k.trim().toLowerCase()==='link');
+      if(pKey && lKey && row[pKey] && row[lKey]){
+        /* Strip _drop / _Drop / _DROP suffix and any trailing underscores */
+        const k = row[pKey].trim().toLowerCase()
+          .replace(/_drop$/i,'').replace(/_+$/,'').trim();
+        imageMap[k] = row[lKey].trim();
+      }
+    });
+  } catch(e){ console.warn('[Images] error:', e); }
+}
+
+/* ── Init ── */
+async function init(){
+  $('loading-screen').style.display='flex';
+  $('error-screen').style.display='none';
+  $('dashboard').className='';
+  imageMap = {};
+  try{
+    const [slideResults] = await Promise.all([
+      Promise.all(SLIDES.map((s,i)=>fetchSlide(s,i))),
+      fetchImages()
+    ]);
+    const allRows = slideResults.flat();
+    sortedRows = [...allRows].sort((a,b)=>a.avg-b.avg);
+    render();
+    $('loading-screen').style.display='none';
+    $('dashboard').className='on';
+  } catch(e){
+    $('loading-screen').style.display='none';
+    $('error-screen').style.display='block';
+    $('error-msg').textContent = e.message || 'Unknown error.';
+  }
+}
+
+/* ── Render dashboard ── */
+function render(){
+  const totC = sortedRows.reduce((s,r)=>s+r.sumC,0);
+  const totW = sortedRows.reduce((s,r)=>s+r.sumW,0);
+  const avg  = sortedRows.reduce((s,r)=>s+r.avg,0)/sortedRows.length;
+  const worst = sortedRows[0];
+
+  $('stats-grid').innerHTML=`
+    <div class="stat-card">
+      <div class="stat-label">Total Questions</div>
+      <div class="stat-value">${sortedRows.length}</div>
+      <div class="stat-sub">across 5 slides</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Correct</div>
+      <div class="stat-value" style="color:var(--green)">${totC.toLocaleString()}</div>
+      <div class="stat-sub">answers</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Wrong</div>
+      <div class="stat-value" style="color:var(--red)">${totW.toLocaleString()}</div>
+      <div class="stat-sub">answers</div>
+    </div>
+    <div class="stat-card" style="border-color:var(--red);background:var(--red-bg)">
+      <div class="stat-label">Overall Average</div>
+      <div class="stat-value" style="color:var(--red)">${avg.toFixed(1)}%</div>
+      <div class="stat-sub">weakest: ${worst?worst.avg.toFixed(1)+'%':'—'}</div>
+    </div>`;
+
+  const tbody=$('tbody'); tbody.innerHTML='';
+  sortedRows.forEach((row,rank)=>{
+    const pct=Math.max(0,Math.min(100,row.avg));
+    const bc=pct>=70?'#16a34a':pct>=50?'#d97706':'#dc2626';
+    const rc=rank===0?'r1':rank===1?'r2':rank===2?'r3':'';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><span class="rank-badge ${rc}">${rank+1}</span></td>
+      <td><div class="q-text">${esc(row.text)}</div></td>
+      <td><span class="slide-tag"><span class="slide-dot" style="background:${row.color}"></span>${esc(row.label)}</span></td>
+      <td class="r" style="color:var(--green);font-weight:600">${row.sumC}</td>
+      <td class="r" style="color:var(--red);font-weight:600">${row.sumW}</td>
+      <td>
+        <div class="bar-wrap">
+          <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${bc}"></div></div>
+          <span class="bar-val" style="color:${bc}">${pct.toFixed(1)}%</span>
+        </div>
+      </td>
+      <td><span class="arrow-icon">
+        <svg viewBox="0 0 16 16"><path d="M6 4l4 4-4 4"/></svg>
+      </span></td>`;
+    tr.addEventListener('click',()=>openModal(rank));
+    tbody.appendChild(tr);
+  });
+}
+
+/* ── Modal ── */
+function openModal(rank){
+  modalIdx=rank;
+  populateModal();
+  $('modal-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(){
+  $('modal-overlay').classList.remove('open');
+  document.body.style.overflow='';
+  if(modalChart){ modalChart.destroy(); modalChart=null; }
+}
+
+function handleOverlayClick(e){
+  if(e.target===$('modal-overlay')) closeModal();
+}
+
+function navModal(dir){
+  const next = modalIdx+dir;
+  if(next<0||next>=sortedRows.length) return;
+  if(modalChart){ modalChart.destroy(); modalChart=null; }
+  modalIdx=next;
+  populateModal();
+}
+
+function populateModal(){
+  const row=sortedRows[modalIdx];
+  const rank=modalIdx;
+  const total=row.sumC+row.sumW;
+
+  /* Header */
+  const rc=rank===0?'r1':rank===1?'r2':rank===2?'r3':'';
+  $('m-rank').className='modal-rank '+rc;
+  $('m-rank').textContent=rank+1;
+  $('m-q').textContent=row.text;
+  $('m-meta').innerHTML=`
+    <span class="slide-tag"><span class="slide-dot" style="background:${row.color}"></span>${esc(row.label)}</span>
+    <span style="font-size:12px;color:var(--text-hint)">Question ${row.qi+1} of 4</span>`;
+
+  /* Scores */
+  const pct=Math.max(0,Math.min(100,row.avg));
+  const bc=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  $('m-avg').textContent=pct.toFixed(1)+'%';
+  $('m-avg').style.color=bc;
+  $('m-correct').textContent=row.sumC;
+  $('m-wrong').textContent=row.sumW;
+
+  /* Build option list sorted by count */
+  const opts=row.choices.map(c=>({
+    name:c, count:row.cc[c]||0,
+    pct:total>0?(((row.cc[c]||0)/total)*100).toFixed(1):'0.0',
+    isCorrect:c===row.correct
+  })).sort((a,b)=>b.count-a.count);
+
+  /* Breakdown table */
+  $('m-tbody').innerHTML=opts.map(o=>`
+    <tr class="${o.isCorrect?'correct-row':''}">
+      <td>${o.isCorrect
+        ?`<span class="correct-badge"><svg viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5"/></svg>${esc(o.name)}</span>`
+        :esc(o.name)}
+      </td>
+      <td class="r" style="font-weight:600;color:${o.isCorrect?'var(--green)':'var(--text)'}">${o.count}</td>
+      <td class="r" style="color:var(--text-muted)">${o.pct}%</td>
+    </tr>`).join('');
+
+  /* Nav */
+  $('nav-prev').disabled=rank===0;
+  $('nav-next').disabled=rank===sortedRows.length-1;
+  $('nav-pos').textContent=`${rank+1} of ${sortedRows.length}`;
+
+  /* Product image — look up by correct answer name (lowercase) */
+  /* Fuzzy image lookup — handles abbreviations like "licor" -> "licorice", "sali" -> "salicylic" */
+  const correctLower = row.correct.trim().toLowerCase();
+  const findImage = () => {
+    /* 1. exact match */
+    if(imageMap[correctLower]) return imageMap[correctLower];
+    /* 2. imageMap key starts with correct, or correct starts with key */
+    const keys = Object.keys(imageMap);
+    let m = keys.find(k => correctLower.startsWith(k) || k.startsWith(correctLower));
+    if(m) return imageMap[m];
+    /* 3. any word overlap */
+    const cWords = correctLower.split(' ');
+    m = keys.find(k => cWords.some(w => k.includes(w) || w.includes(k.split(' ')[0])));
+    if(m) return imageMap[m];
+    return null;
+  };
+  const imgUrl = findImage();
+  const imgPanel = $('img-panel');
+  const imgCols  = $('modal-cols');
+  if(imgUrl){
+    $('img-panel-head').textContent = row.correct + ' — Product Label';
+    $('img-container').innerHTML = `<img src="${imgUrl}" alt="${esc(row.correct)} product label" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'img-placeholder\'>Image could not be loaded.</div>'"/>`;
+    imgPanel.style.display='';
+    imgCols.className='modal-cols with-image';
+  } else {
+    imgPanel.style.display='none';
+    imgCols.className='modal-cols no-image';
+  }
+
+  /* Chart — wait for canvas to be in DOM */
+  if(modalChart){ modalChart.destroy(); modalChart=null; }
+  requestAnimationFrame(()=>buildModalChart(row,opts,total));
+}
+
+function buildModalChart(row,opts,total){
+  const cv=$('m-chart'); if(!cv) return;
+  modalChart=new Chart(cv,{
+    type:'bar',
+    data:{
+      labels:opts.map(o=>o.name),
+      datasets:[{
+        data:opts.map(o=>o.count),
+        backgroundColor:opts.map(o=>o.isCorrect?'rgba(22,163,74,0.82)':'rgba(220,38,38,0.55)'),
+        borderColor:opts.map(o=>o.isCorrect?'rgba(22,163,74,1)':'rgba(220,38,38,0.8)'),
+        borderWidth:1, borderRadius:6, barThickness:30
+      }]
+    },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{
+            label(ctx){
+              const p=total>0?((ctx.raw/total)*100).toFixed(1):0;
+              return ` ${ctx.raw} responses (${p}%)`;
+            }
+          }
+        }
+      },
+      scales:{
+        x:{beginAtZero:true,
+          grid:{color:'rgba(0,0,0,0.05)'},
+          ticks:{font:{family:'DM Sans',size:11},color:'#6b6860',stepSize:1}},
+        y:{grid:{display:false},
+          ticks:{font:{family:'DM Sans',size:12},color:'#1a1917'}}
+      }
+    }
+  });
+}
+
+/* ── Keyboard nav ── */
+document.addEventListener('keydown',e=>{
+  if(!$('modal-overlay').classList.contains('open')) return;
+  if(e.key==='Escape') closeModal();
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') navModal(1);
+  if(e.key==='ArrowLeft' ||e.key==='ArrowUp')   navModal(-1);
+});
+
+/* ── Boot ── */
+init();
+</script>
+</body>
+</html>
