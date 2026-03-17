@@ -188,17 +188,19 @@
     display: flex; align-items: center; justify-content: center;
     opacity: 0; pointer-events: none;
     transition: opacity .22s ease;
-    padding: 24px;
+    padding: 16px;
   }
   #modal-overlay.open { opacity: 1; pointer-events: all; }
 
   .modal {
     background: var(--surface);
-    border-radius: 18px;
+    border-radius: 16px;
     box-shadow: var(--shadow-lg);
-    width: 100%; max-width: 860px;
-    max-height: calc(100vh - 48px);
-    overflow-y: auto;
+    width: 100%; max-width: 1000px;
+    height: calc(100vh - 32px);
+    max-height: 820px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
     transform: translateY(16px) scale(0.98);
     transition: transform .25s cubic-bezier(.34,1.3,.64,1), opacity .22s ease;
     opacity: 0;
@@ -207,24 +209,23 @@
 
   /* Modal header */
   .modal-header {
-    padding: 18px 18px 15px;
+    padding: 14px 20px 12px;
     border-bottom: 1px solid var(--border-light);
-    display: flex; align-items: flex-start; gap: 16px;
-    position: sticky; top: 0; background: var(--surface);
-    border-radius: 18px 18px 0 0;
-    z-index: 2;
+    display: flex; align-items: flex-start; gap: 12px;
+    flex-shrink: 0;
+    border-radius: 16px 16px 0 0;
   }
   .modal-rank {
-    width: 40px; height: 40px; border-radius: 10px;
+    width: 34px; height: 34px; border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 16px; font-weight: 700; flex-shrink: 0;
+    font-size: 14px; font-weight: 700; flex-shrink: 0;
     background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted);
   }
   .modal-rank.r1 { background: #fef2f2; border-color: #fca5a5; color: var(--red); }
   .modal-rank.r2 { background: #fff7ed; border-color: #fdba74; color: var(--amber); }
   .modal-rank.r3 { background: #fffbeb; border-color: #fcd34d; color: #92400e; }
   .modal-title-wrap { flex: 1; }
-  .modal-q { font-size: 16px; font-weight: 600; line-height: 1.4; margin-bottom: 6px; }
+  .modal-q { font-size: 14px; font-weight: 600; line-height: 1.3; margin-bottom: 4px; }
   .modal-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .modal-close {
     width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border);
@@ -234,100 +235,103 @@
   }
   .modal-close:hover { background: var(--red-bg); border-color: #fca5a5; color: var(--red); }
 
-  /* Modal body */
-  .modal-body { padding: 11px 22px 11px; }
+  /* Modal body — flex column fills remaining height */
+  .modal-body {
+    padding: 10px 18px 12px;
+    flex: 1; display: flex; flex-direction: column;
+    overflow: hidden; gap: 8px; min-height: 0;
+  }
 
-  /* Score banner */
+  /* Score banner — compact, fixed height */
   .score-banner {
-    display: grid; grid-template-columns: repeat(3,1fr); gap: 12px;
-    margin-bottom: 24px;
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 8px;
+    flex-shrink: 0;
   }
   .score-tile {
-    border-radius: 12px; padding: 8px 18px; text-align: center;
+    border-radius: 10px; padding: 8px 12px; text-align: center;
     border: 1px solid var(--border-light);
   }
   .score-tile.avg { background: var(--surface2); }
   .score-tile.correct { background: var(--green-bg); border-color: #86efac; }
   .score-tile.wrong { background: var(--red-bg); border-color: #fca5a5; }
-  .tile-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; color: var(--text-hint); margin-bottom: 6px; }
-  .tile-num { font-size: 32px; font-weight: 700; line-height: 1; }
+  .tile-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; color: var(--text-hint); margin-bottom: 2px; }
+  .tile-num { font-size: 24px; font-weight: 700; line-height: 1; }
   .score-tile.avg .tile-num { color: var(--text); }
   .score-tile.correct .tile-num { color: var(--green); }
   .score-tile.wrong .tile-num { color: var(--red); }
-  .tile-sub { font-size: 12px; margin-top: 4px; color: var(--text-muted); }
+  .tile-sub { font-size: 10px; margin-top: 2px; color: var(--text-muted); }
 
-  /* Two-col layout */
-  .modal-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+  /* Content columns — stretch to fill remaining vertical space */
+  .modal-cols { display: grid; gap: 12px; align-items: stretch; flex: 1; min-height: 0; }
+  .modal-cols.with-image { grid-template-columns: 1fr 1fr 1fr; }
+  .modal-cols.no-image   { grid-template-columns: 1fr 1fr; }
 
+  /* Panels fill their column height */
   .panel {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius-lg); overflow: hidden;
+    display: flex; flex-direction: column;
   }
-  .panel-head { padding: 14px 18px; font-size: 13px; font-weight: 600; border-bottom: 1px solid var(--border-light); }
-  .panel-body { padding: 16px 18px; }
+  .panel-head { padding: 10px 14px; font-size: 12px; font-weight: 600; border-bottom: 1px solid var(--border-light); flex-shrink: 0; }
+  .panel-body { padding: 12px 14px; flex: 1; min-height: 0; }
+  .panel-body > div { height: 100% !important; }
 
   /* Breakdown table */
   .bk-table { width: 100%; border-collapse: collapse; }
   .bk-table th {
-    font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em;
-    color: var(--text-hint); padding: 8px 14px; text-align: left;
+    font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--text-hint); padding: 6px 12px; text-align: left;
     background: var(--surface2); border-bottom: 1px solid var(--border-light);
   }
   .bk-table th.r { text-align: right; }
-  .bk-table td { padding: 11px 14px; font-size: 13px; border-bottom: 1px solid var(--border-light); vertical-align: middle; }
+  .bk-table td { padding: 9px 12px; font-size: 12px; border-bottom: 1px solid var(--border-light); vertical-align: middle; }
   .bk-table tr:last-child td { border-bottom: none; }
   .bk-table td.r { text-align: right; }
   .bk-table tr.correct-row { background: var(--green-bg); }
 
   .correct-badge {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-size: 12px; font-weight: 500; color: var(--green);
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 500; color: var(--green);
     background: #dcfce7; border: 1px solid #86efac;
-    padding: 3px 9px; border-radius: 20px;
+    padding: 2px 8px; border-radius: 20px;
   }
-  .correct-badge svg { width: 11px; height: 11px; stroke: var(--green); stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .correct-badge svg { width: 10px; height: 10px; stroke: var(--green); stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
 
-  /* Nav buttons */
+  /* Nav buttons — pinned to bottom */
   .modal-nav {
     display: flex; justify-content: space-between; align-items: center;
-    margin-top: 24px; padding-top: 15px;
-    border-top: 1px solid var(--border-light);
+    padding: 8px 0 0; border-top: 1px solid var(--border-light);
+    flex-shrink: 0;
   }
   .nav-btn {
-    display: flex; align-items: center; gap: 7px;
-    height: 38px; padding: 0 16px;
+    display: flex; align-items: center; gap: 6px;
+    height: 34px; padding: 0 14px;
     background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
     color: var(--text-muted); cursor: pointer; transition: all .15s;
   }
   .nav-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
   .nav-btn:disabled { opacity: .35; cursor: not-allowed; }
-  .nav-btn svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-  .nav-pos { font-size: 13px; color: var(--text-muted); }
+  .nav-btn svg { width: 13px; height: 13px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .nav-pos { font-size: 12px; color: var(--text-muted); }
 
-  /* Product image */
-  .img-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-  .img-panel .panel-head { padding: 14px 18px; font-size: 13px; font-weight: 600; border-bottom: 1px solid var(--border-light); }
-  .img-panel img { width: 100%; display: block; object-fit: contain; max-height: 320px; background: var(--surface2); }
-  .img-panel .img-placeholder { padding: 32px; text-align: center; color: var(--text-hint); font-size: 13px; background: var(--surface2); }
-
-  /* Make modal wider when image present */
-  .modal { max-width: 980px; }
-
-  /* 3-col layout for modal when image exists */
-  .modal-cols { display: grid; gap: 20px; align-items: start; }
-  .modal-cols.with-image { grid-template-columns: 1fr 1fr 1fr; }
-  .modal-cols.no-image   { grid-template-columns: 1fr 1fr; }
+  /* Product image panel */
+  .img-panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .img-panel .panel-head { padding: 10px 14px; font-size: 12px; font-weight: 600; border-bottom: 1px solid var(--border-light); flex-shrink: 0; }
+  .img-panel img { width: 100%; flex: 1; display: block; object-fit: contain; min-height: 0; background: var(--surface2); }
+  .img-panel .img-placeholder { flex: 1; padding: 24px; text-align: center; color: var(--text-hint); font-size: 13px; background: var(--surface2); }
 
   @media (max-width: 680px) {
     .stats-grid { grid-template-columns: repeat(2,1fr); }
-    .modal-cols.with-image, .modal-cols.no-image { grid-template-columns: 1fr; }
-    .score-banner { grid-template-columns: repeat(3,1fr); gap: 8px; }
+    .modal-cols.with-image, .modal-cols.no-image { grid-template-columns: 1fr; overflow-y: auto; }
     header { padding: 0 16px; }
     main { padding: 20px 16px 48px; }
-    .modal-header { padding: 18px 18px 14px; }
-    .modal-body { padding: 18px 18px 22px; }
-    #modal-overlay { padding: 12px; }
+    #modal-overlay { padding: 8px; }
+    .modal { height: 100vh; max-height: 100vh; border-radius: 12px; }
   }
 </style>
 </head>
@@ -438,7 +442,7 @@
         <div class="panel">
           <div class="panel-head">Response distribution</div>
           <div class="panel-body">
-            <div style="position:relative;height:200px">
+            <div style="position:relative;width:100%;height:100%;min-height:160px">
               <canvas id="m-chart"></canvas>
             </div>
           </div>
@@ -491,7 +495,7 @@ const SLIDES = [
   },
   {
     name:'Drag_and_Drop_4', label:'Slide 4 – Barrier', color:'#10b981',
-    choices:['Ceramides','Squalane','Petrolatum','Silicones']
+    choices:['Ceramides','Squalane','Pertolatum','Silicones']
   },
   {
     name:'Drag_and_Drop_5', label:'Slide 5 – Brighteners', color:'#ec4899',
@@ -527,37 +531,48 @@ async function fetchSlide(slide, si){
     };
     const cc={};
     slide.choices.forEach(c=>{
-      const k = rkeys.find(k=>k.trim().toLowerCase()===c.toLowerCase());
-      cc[c] = k ? parseInt(row[k])||0 : 0;
+      /* Try exact match first, then case-insensitive fallback */
+      const k = rkeys.find(k=>k.trim()===c) || rkeys.find(k=>k.trim().toLowerCase()===c.toLowerCase());
+      const raw = k ? row[k] : undefined;
+      cc[c] = (raw !== undefined && raw !== '') ? (parseInt(raw)||0) : 0;
     });
-    const sumC   = parseInt(find('Sum Correct','SumCorrect'))||0;
-    const sumW   = parseInt(find('Sum Wrong','SumWrong'))||0;
-    const avg    = parseFloat(find('Average'))||0;
-    /* Clean the correct answer value:
-       Strip any "drag_drop_" / "Drag_Drop_" prefix pattern, then fuzzy-match
-       against the choices list (lowercase, first-word, or closest substring). */
+    const sumC = parseInt(find('Sum Correct','SumCorrect'))||0;
+    const sumW = parseInt(find('Sum Wrong','SumWrong'))||0;
+    /* Average may be stored as "50%" — strip the % sign before parsing */
+    const avg  = parseFloat((find('Average')||'0').toString().replace('%',''))||0;
+    /* Strip _Drop / _drop suffix from raw correct answer value */
     const rawCorrect = find('Correct Answer','CorrectAnswer','correct_answer','correct').trim();
-    const cleaned = rawCorrect
-      .replace(/_/g,' ')
-      .replace(/\b(drag|drop)\b/gi,'')
-      .replace(/\s+/g,' ')
-      .trim()
-      .toLowerCase();
-    const matchChoice = choices => {
-      /* 1. exact lowercase match */
-      let m = choices.find(c=>c.toLowerCase()===cleaned);
-      if(m) return m;
-      /* 2. cleaned starts with choice or choice starts with cleaned */
-      m = choices.find(c=>cleaned.startsWith(c.toLowerCase())||c.toLowerCase().startsWith(cleaned));
-      if(m) return m;
-      /* 3. any word in cleaned matches any word in choice */
-      const words = cleaned.split(' ').filter(Boolean);
-      m = choices.find(c=>words.some(w=>c.toLowerCase().includes(w)||w.includes(c.toLowerCase().split(' ')[0])));
-      if(m) return m;
-      /* 4. fallback: first choice */
-      return choices[qi] || choices[0];
+    const stripped = rawCorrect.replace(/_drop$/i,'').replace(/_+$/,'').trim().toLowerCase();
+
+    /* Known abbreviations/typos in the sheet mapped to exact choice names */
+    /* Complete map: every raw correct answer value (lowercased, _drop stripped) -> exact choice name */
+    const ALIAS = {
+      'alpha arbutin': 'Alpha Arbutin',
+      'azelaic acid':  'Azelaic Acid',
+      'centella':      'Centella',
+      'ceramides':     'Ceramides',
+      'enoxolone':     'Enoxolone',
+      'glycolic':      'Glycolic',
+      'hyaluronic':    'Hyaluronic',
+      'licor':         'Licorice',
+      'niacinamed':    'Niacinamide',
+      'peptides':      'Peptides',
+      'pertolatum':    'Pertolatum',
+      'retinol':       'Retinol',
+      'sali':          'Salicylic',
+      'silicones':     'Silicones',
+      'squalane':      'Squalane',
+      'sulfur':        'Sulfur',
+      'tea tree oil':  'Tea Tree',
+      'urea':          'Urea',
+      'vitamin c':     'Vitamin C',
+      'zinc':          'Zinc',
     };
-    const correct = matchChoice(slide.choices);
+
+    const resolved = ALIAS[stripped]
+      || slide.choices.find(c => c.toLowerCase() === stripped)
+      || slide.choices[qi];
+    const correct = resolved;
     const text = correct;
     return { si, label:slide.label, color:slide.color, qi,
       text, choices:slide.choices, cc, correct, sumC, sumW, avg };
@@ -566,20 +581,43 @@ async function fetchSlide(slide, si){
 
 /* ── Fetch images tab ── */
 async function fetchImages(){
+  /* Strip _drop suffix then map to canonical lowercase choice names (mirrors fetchSlide ALIAS) */
+  const ALIAS = {
+    'alpha arbutin': 'alpha arbutin',
+    'azelaic acid':  'azelaic acid',
+    'centella':      'centella',
+    'ceramides':     'ceramides',
+    'enoxolone':     'enoxolone',
+    'glycolic':      'glycolic',
+    'hyaluronic':    'hyaluronic',
+    'licor':         'licorice',
+    'niacinamed':    'niacinamide',
+    'peptides':      'peptides',
+    'pertolatum':    'pertolatum',
+    'retinol':       'retinol',
+    'sali':          'salicylic',
+    'silicones':     'silicones',
+    'squalane':      'squalane',
+    'sulfur':        'sulfur',
+    'tea tree oil':  'tea tree',
+    'urea':          'urea',
+    'vitamin c':     'vitamin c',
+    'zinc':          'zinc',
+  };
   try{
     const url = `https://opensheet.elk.sh/${SHEET_ID}/Images`;
     const resp = await fetch(url);
-    if(!resp.ok){ console.warn('[Images] bad status:', resp.status); return; }
+    if(!resp.ok) return;
     const data = await resp.json();
     data.forEach(row=>{
       const rkeys = Object.keys(row);
       const pKey = rkeys.find(k=>k.trim().toLowerCase()==='product');
       const lKey = rkeys.find(k=>k.trim().toLowerCase()==='link');
       if(pKey && lKey && row[pKey] && row[lKey]){
-        /* Strip _drop / _Drop / _DROP suffix and any trailing underscores */
-        const k = row[pKey].trim().toLowerCase()
+        const stripped = row[pKey].trim().toLowerCase()
           .replace(/_drop$/i,'').replace(/_+$/,'').trim();
-        imageMap[k] = row[lKey].trim();
+        const canonical = ALIAS[stripped] || stripped;
+        imageMap[canonical] = row[lKey].trim();
       }
     });
   } catch(e){ console.warn('[Images] error:', e); }
@@ -711,12 +749,12 @@ function populateModal(){
   $('m-correct').textContent=row.sumC;
   $('m-wrong').textContent=row.sumW;
 
-  /* Build option list sorted by count */
+  /* All 4 options in original slide order — correct answer highlighted */
   const opts=row.choices.map(c=>({
     name:c, count:row.cc[c]||0,
     pct:total>0?(((row.cc[c]||0)/total)*100).toFixed(1):'0.0',
     isCorrect:c===row.correct
-  })).sort((a,b)=>b.count-a.count);
+  }));
 
   /* Breakdown table */
   $('m-tbody').innerHTML=opts.map(o=>`
@@ -735,22 +773,9 @@ function populateModal(){
   $('nav-pos').textContent=`${rank+1} of ${sortedRows.length}`;
 
   /* Product image — look up by correct answer name (lowercase) */
-  /* Fuzzy image lookup — handles abbreviations like "licor" -> "licorice", "sali" -> "salicylic" */
+  /* Image lookup — direct match on correct answer name (lowercase) */
   const correctLower = row.correct.trim().toLowerCase();
-  const findImage = () => {
-    /* 1. exact match */
-    if(imageMap[correctLower]) return imageMap[correctLower];
-    /* 2. imageMap key starts with correct, or correct starts with key */
-    const keys = Object.keys(imageMap);
-    let m = keys.find(k => correctLower.startsWith(k) || k.startsWith(correctLower));
-    if(m) return imageMap[m];
-    /* 3. any word overlap */
-    const cWords = correctLower.split(' ');
-    m = keys.find(k => cWords.some(w => k.includes(w) || w.includes(k.split(' ')[0])));
-    if(m) return imageMap[m];
-    return null;
-  };
-  const imgUrl = findImage();
+  const imgUrl = imageMap[correctLower] || null;
   const imgPanel = $('img-panel');
   const imgCols  = $('modal-cols');
   if(imgUrl){
@@ -768,17 +793,28 @@ function populateModal(){
   requestAnimationFrame(()=>buildModalChart(row,opts,total));
 }
 
-function buildModalChart(row,opts,total){
+function buildModalChart(row, opts, total){
   const cv=$('m-chart'); if(!cv) return;
+
+  /* Always render all 4 choices in their original slide order */
+  const all4 = row.choices.map(c=>({
+    name: c,
+    count: row.cc[c]||0,
+    isCorrect: c===row.correct
+  }));
+
   modalChart=new Chart(cv,{
     type:'bar',
     data:{
-      labels:opts.map(o=>o.name),
+      labels: all4.map(o=>o.name),
       datasets:[{
-        data:opts.map(o=>o.count),
-        backgroundColor:opts.map(o=>o.isCorrect?'rgba(22,163,74,0.82)':'rgba(220,38,38,0.55)'),
-        borderColor:opts.map(o=>o.isCorrect?'rgba(22,163,74,1)':'rgba(220,38,38,0.8)'),
-        borderWidth:1, borderRadius:6, barThickness:30
+        data: all4.map(o=>o.count),
+        backgroundColor: all4.map(o=>o.isCorrect?'rgba(22,163,74,0.82)':'rgba(220,38,38,0.55)'),
+        borderColor:     all4.map(o=>o.isCorrect?'rgba(22,163,74,1)':'rgba(220,38,38,0.8)'),
+        borderWidth: 1,
+        borderRadius: 6,
+        barThickness: 30,
+        minBarLength: 6
       }]
     },
     options:{
@@ -795,11 +831,15 @@ function buildModalChart(row,opts,total){
         }
       },
       scales:{
-        x:{beginAtZero:true,
+        x:{
+          beginAtZero:true, min:0,
           grid:{color:'rgba(0,0,0,0.05)'},
-          ticks:{font:{family:'DM Sans',size:11},color:'#6b6860',stepSize:1}},
-        y:{grid:{display:false},
-          ticks:{font:{family:'DM Sans',size:12},color:'#1a1917'}}
+          ticks:{font:{family:'DM Sans',size:11},color:'#6b6860',stepSize:1,precision:0}
+        },
+        y:{
+          grid:{display:false},
+          ticks:{font:{family:'DM Sans',size:12},color:'#1a1917'}
+        }
       }
     }
   });
