@@ -30,6 +30,9 @@
     --radius-lg: 14px;
     --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
     --shadow-lg: 0 20px 60px rgba(0,0,0,0.18), 0 4px 16px rgba(0,0,0,0.08);
+    --gold: #f59e0b;
+    --silver: #94a3b8;
+    --bronze: #b45309;
   }
 
   body {
@@ -41,7 +44,6 @@
     line-height: 1.6;
   }
 
-  /* ── Header ── */
   header {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
@@ -51,206 +53,200 @@
     position: sticky; top: 0; z-index: 50;
   }
   .logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; }
-  .logo-icon {
-    width: 30px; height: 30px; background: var(--accent);
-    border-radius: 8px; display: flex; align-items: center; justify-content: center;
-  }
+  .logo-icon { width: 30px; height: 30px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
   .logo-icon svg { width: 16px; height: 16px; fill: white; }
   .header-right { display: flex; align-items: center; gap: 12px; }
-  .header-tag {
-    font-size: 12px; font-weight: 500; color: var(--text-muted);
-    background: var(--surface2); border: 1px solid var(--border);
-    padding: 4px 10px; border-radius: 20px;
-  }
-  .refresh-btn {
-    width: 34px; height: 34px; border-radius: 8px;
-    border: 1px solid var(--border); background: var(--surface);
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    color: var(--text-muted); transition: all .15s;
-  }
+  .header-tag { font-size: 12px; font-weight: 500; color: var(--text-muted); background: var(--surface2); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; }
+  .refresh-btn { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all .15s; }
   .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
   .refresh-btn svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
-  /* ── Main ── */
   main { max-width: 1100px; margin: 0 auto; padding: 32px 24px 64px; }
 
-  /* ── Loading screen ── */
-  #loading-screen {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    min-height: 60vh; gap: 16px; color: var(--text-muted);
-  }
-  .big-spinner {
-    width: 40px; height: 40px;
-    border: 3px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin .8s linear infinite;
-  }
+  #loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; gap: 16px; color: var(--text-muted); }
+  .big-spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .loading-label { font-size: 14px; font-weight: 500; }
   .loading-sub { font-size: 13px; color: var(--text-hint); }
 
-  /* ── Error screen ── */
-  #error-screen {
-    display: none; text-align: center;
-    padding: 64px 32px;
-  }
+  #error-screen { display: none; text-align: center; padding: 64px 32px; }
   #error-screen .err-icon { font-size: 40px; margin-bottom: 16px; }
   #error-screen h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
   #error-screen p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
-  .retry-btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    height: 40px; padding: 0 20px;
-    background: var(--accent); color: #fff; border: none; border-radius: var(--radius);
-    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer;
-    transition: background .15s;
-  }
+  .retry-btn { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 20px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: background .15s; }
   .retry-btn:hover { background: #1d4ed8; }
 
-  /* ── Dashboard ── */
   #dashboard { display: none; }
   #dashboard.on { display: block; }
 
-  .section-head {
-    display: flex; align-items: baseline; justify-content: space-between;
-    margin-bottom: 16px;
+  /* ── Podium ── */
+  .podium-section {
+    margin-bottom: 32px;
   }
+  .podium-section-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .podium-section-head h2 { font-size: 17px; font-weight: 600; }
+  .podium-section-head p { font-size: 13px; color: var(--text-muted); }
+
+  .podium-stage {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 12px;
+    padding: 0 24px 0;
+  }
+
+  .podium-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    max-width: 220px;
+    animation: podiumRise .5s ease both;
+  }
+  .podium-item:nth-child(1) { animation-delay: .1s; }
+  .podium-item:nth-child(2) { animation-delay: 0s; }
+  .podium-item:nth-child(3) { animation-delay: .2s; }
+  .podium-item:nth-child(4) { animation-delay: .3s; }
+
+  @keyframes podiumRise {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Name card above the block */
+  .podium-card {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 14px 12px 12px;
+    text-align: center;
+    margin-bottom: 8px;
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+
+  .podium-crown {
+    position: absolute;
+    top: -14px; left: 50%; transform: translateX(-50%);
+    font-size: 22px; line-height: 1;
+  }
+
+  .podium-team {
+    font-size: 13px; font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .podium-avg {
+    font-size: 28px; font-weight: 700; line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .podium-sub {
+    font-size: 11px; color: var(--text-hint);
+    margin-bottom: 8px;
+  }
+
+  .podium-scores {
+    display: flex; gap: 6px; justify-content: center;
+  }
+
+  .podium-pill {
+    font-size: 11px; font-weight: 500;
+    padding: 2px 8px; border-radius: 20px;
+  }
+  .podium-pill.scored { background: #dcfce7; color: var(--green); border: 1px solid #86efac; }
+  .podium-pill.full   { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
+
+  /* The actual block / step */
+  .podium-block {
+    width: 100%;
+    border-radius: 10px 10px 0 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 800; color: #fff;
+    letter-spacing: -.5px;
+    min-height: 32px;
+  }
+
+  /* Heights and colors by rank */
+  .podium-item.rank-1 .podium-block { height: 80px; background: linear-gradient(160deg,#fbbf24,#f59e0b); box-shadow: 0 4px 16px rgba(245,158,11,.35); }
+  .podium-item.rank-2 .podium-block { height: 56px; background: linear-gradient(160deg,#cbd5e1,#94a3b8); box-shadow: 0 4px 12px rgba(148,163,184,.35); }
+  .podium-item.rank-3 .podium-block { height: 40px; background: linear-gradient(160deg,#d97706,#b45309); box-shadow: 0 4px 10px rgba(180,83,9,.3); }
+  .podium-item.rank-4 .podium-block { height: 28px; background: linear-gradient(160deg,#6b7280,#4b5563); box-shadow: 0 2px 8px rgba(75,85,99,.25); }
+
+  .podium-item.rank-1 .podium-avg { color: #b45309; }
+  .podium-item.rank-2 .podium-avg { color: #475569; }
+  .podium-item.rank-3 .podium-avg { color: #92400e; }
+  .podium-item.rank-4 .podium-avg { color: var(--text-muted); }
+
+  .podium-item.rank-1 .podium-card { border-color: #fcd34d; box-shadow: 0 0 0 1px #fcd34d, var(--shadow); }
+
+  /* Floor line */
+  .podium-floor {
+    height: 4px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    border-radius: 2px;
+    margin: 0 0 32px;
+  }
+
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 16px; }
   .section-head h2 { font-size: 17px; font-weight: 600; }
   .section-head p { font-size: 13px; color: var(--text-muted); }
 
-  /* Stats grid */
   .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 28px; }
-  .stat-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow);
-  }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow); }
   .stat-label { font-size: 11px; font-weight: 500; color: var(--text-hint); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
   .stat-value { font-size: 26px; font-weight: 600; line-height: 1; }
   .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
-  /* Table */
-  .table-wrap {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden;
-  }
+  .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden; }
   table { width: 100%; border-collapse: collapse; }
-  thead th {
-    font-size: 11px; font-weight: 500; text-transform: uppercase;
-    letter-spacing: .06em; color: var(--text-hint);
-    padding: 10px 18px; text-align: left;
-    background: var(--surface2); border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-  }
+  thead th { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; color: var(--text-hint); padding: 10px 18px; text-align: left; background: var(--surface2); border-bottom: 1px solid var(--border); white-space: nowrap; }
   thead th.r { text-align: right; }
-  tbody tr {
-    cursor: pointer; border-bottom: 1px solid var(--border-light);
-    transition: background .12s;
-  }
+  tbody tr { cursor: pointer; border-bottom: 1px solid var(--border-light); transition: background .12s; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: #f0f4ff; }
   tbody td { padding: 14px 18px; vertical-align: middle; }
   tbody td.r { text-align: right; font-variant-numeric: tabular-nums; }
 
-  .rank-badge {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 28px; height: 28px; border-radius: 7px;
-    font-size: 12px; font-weight: 600;
-    background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted);
-    flex-shrink: 0;
-  }
+  .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 7px; font-size: 12px; font-weight: 600; background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); flex-shrink: 0; }
   .r1 { background: #fef2f2; border-color: #fca5a5; color: var(--red); }
   .r2 { background: #fff7ed; border-color: #fdba74; color: var(--amber); }
   .r3 { background: #fffbeb; border-color: #fcd34d; color: #92400e; }
 
   .q-text { font-weight: 500; font-size: 13px; line-height: 1.4; }
-
-  .slide-tag {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 20px;
-    background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted);
-    white-space: nowrap;
-  }
+  .slide-tag { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 20px; background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); white-space: nowrap; }
   .slide-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-
   .bar-wrap { display: flex; align-items: center; gap: 10px; }
   .bar-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; min-width: 80px; }
   .bar-fill { height: 100%; border-radius: 3px; transition: width .5s ease; }
   .bar-val { font-size: 13px; font-weight: 600; min-width: 42px; text-align: right; font-variant-numeric: tabular-nums; }
-
   .arrow-icon { color: var(--text-hint); display: flex; align-items: center; flex-shrink: 0; }
   .arrow-icon svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
-  /* ── Modal overlay ── */
-  #modal-overlay {
-    position: fixed; inset: 0; z-index: 200;
-    background: rgba(15,15,15,0.55);
-    backdrop-filter: blur(3px);
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0; pointer-events: none;
-    transition: opacity .22s ease;
-    padding: 16px;
-  }
+  /* ── Modal ── */
+  #modal-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(15,15,15,0.55); backdrop-filter: blur(3px); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .22s ease; padding: 16px; }
   #modal-overlay.open { opacity: 1; pointer-events: all; }
-
-  .modal {
-    background: var(--surface);
-    border-radius: 16px;
-    box-shadow: var(--shadow-lg);
-    width: 100%; max-width: 1000px;
-    height: calc(100vh - 32px);
-    max-height: 820px;
-    overflow: hidden;
-    display: flex; flex-direction: column;
-    transform: translateY(16px) scale(0.98);
-    transition: transform .25s cubic-bezier(.34,1.3,.64,1), opacity .22s ease;
-    opacity: 0;
-  }
+  .modal { background: var(--surface); border-radius: 16px; box-shadow: var(--shadow-lg); width: 100%; max-width: 1000px; height: calc(100vh - 32px); max-height: 820px; overflow: hidden; display: flex; flex-direction: column; transform: translateY(16px) scale(0.98); transition: transform .25s cubic-bezier(.34,1.3,.64,1), opacity .22s ease; opacity: 0; }
   #modal-overlay.open .modal { transform: translateY(0) scale(1); opacity: 1; }
-
-  /* Modal header */
-  .modal-header {
-    padding: 14px 20px 12px;
-    border-bottom: 1px solid var(--border-light);
-    display: flex; align-items: flex-start; gap: 12px;
-    flex-shrink: 0;
-    border-radius: 16px 16px 0 0;
-  }
-  .modal-rank {
-    width: 34px; height: 34px; border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; font-weight: 700; flex-shrink: 0;
-    background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted);
-  }
+  .modal-header { padding: 14px 20px 12px; border-bottom: 1px solid var(--border-light); display: flex; align-items: flex-start; gap: 12px; flex-shrink: 0; border-radius: 16px 16px 0 0; }
+  .modal-rank { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); }
   .modal-rank.r1 { background: #fef2f2; border-color: #fca5a5; color: var(--red); }
   .modal-rank.r2 { background: #fff7ed; border-color: #fdba74; color: var(--amber); }
   .modal-rank.r3 { background: #fffbeb; border-color: #fcd34d; color: #92400e; }
   .modal-title-wrap { flex: 1; }
   .modal-q { font-size: 14px; font-weight: 600; line-height: 1.3; margin-bottom: 4px; }
   .modal-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .modal-close {
-    width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border);
-    background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    color: var(--text-muted); transition: all .15s; flex-shrink: 0;
-    font-size: 18px; line-height: 1;
-  }
+  .modal-close { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all .15s; flex-shrink: 0; font-size: 18px; line-height: 1; }
   .modal-close:hover { background: var(--red-bg); border-color: #fca5a5; color: var(--red); }
-
-  /* Modal body — flex column fills remaining height */
-  .modal-body {
-    padding: 10px 18px 12px;
-    flex: 1; display: flex; flex-direction: column;
-    overflow: hidden; gap: 8px; min-height: 0;
-  }
-
-  /* Score banner — compact, fixed height */
-  .score-banner {
-    display: grid; grid-template-columns: repeat(3,1fr); gap: 8px;
-    flex-shrink: 0;
-  }
-  .score-tile {
-    border-radius: 10px; padding: 8px 12px; text-align: center;
-    border: 1px solid var(--border-light);
-  }
+  .modal-body { padding: 10px 18px 12px; flex: 1; display: flex; flex-direction: column; overflow: hidden; gap: 8px; min-height: 0; }
+  .score-banner { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; flex-shrink: 0; }
+  .score-tile { border-radius: 10px; padding: 8px 12px; text-align: center; border: 1px solid var(--border-light); }
   .score-tile.avg { background: var(--surface2); }
   .score-tile.correct { background: var(--green-bg); border-color: #86efac; }
   .score-tile.wrong { background: var(--red-bg); border-color: #fca5a5; }
@@ -260,67 +256,29 @@
   .score-tile.correct .tile-num { color: var(--green); }
   .score-tile.wrong .tile-num { color: var(--red); }
   .tile-sub { font-size: 10px; margin-top: 2px; color: var(--text-muted); }
-
-  /* Content columns — stretch to fill remaining vertical space */
   .modal-cols { display: grid; gap: 12px; align-items: stretch; flex: 1; min-height: 0; }
   .modal-cols.with-image { grid-template-columns: 1fr 1fr 1fr; }
   .modal-cols.no-image   { grid-template-columns: 1fr 1fr; }
-
-  /* Panels fill their column height */
-  .panel {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius-lg); overflow: hidden;
-    display: flex; flex-direction: column;
-  }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: column; }
   .panel-head { padding: 10px 14px; font-size: 12px; font-weight: 600; border-bottom: 1px solid var(--border-light); flex-shrink: 0; }
   .panel-body { padding: 12px 14px; flex: 1; min-height: 0; }
   .panel-body > div { height: 100% !important; }
-
-  /* Breakdown table */
   .bk-table { width: 100%; border-collapse: collapse; }
-  .bk-table th {
-    font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em;
-    color: var(--text-hint); padding: 6px 12px; text-align: left;
-    background: var(--surface2); border-bottom: 1px solid var(--border-light);
-  }
+  .bk-table th { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; color: var(--text-hint); padding: 6px 12px; text-align: left; background: var(--surface2); border-bottom: 1px solid var(--border-light); }
   .bk-table th.r { text-align: right; }
   .bk-table td { padding: 9px 12px; font-size: 12px; border-bottom: 1px solid var(--border-light); vertical-align: middle; }
   .bk-table tr:last-child td { border-bottom: none; }
   .bk-table td.r { text-align: right; }
   .bk-table tr.correct-row { background: var(--green-bg); }
-
-  .correct-badge {
-    display: inline-flex; align-items: center; gap: 4px;
-    font-size: 11px; font-weight: 500; color: var(--green);
-    background: #dcfce7; border: 1px solid #86efac;
-    padding: 2px 8px; border-radius: 20px;
-  }
+  .correct-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; color: var(--green); background: #dcfce7; border: 1px solid #86efac; padding: 2px 8px; border-radius: 20px; }
   .correct-badge svg { width: 10px; height: 10px; stroke: var(--green); stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
-
-  /* Nav buttons — pinned to bottom */
-  .modal-nav {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 8px 0 0; border-top: 1px solid var(--border-light);
-    flex-shrink: 0;
-  }
-  .nav-btn {
-    display: flex; align-items: center; gap: 6px;
-    height: 34px; padding: 0 14px;
-    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
-    color: var(--text-muted); cursor: pointer; transition: all .15s;
-  }
+  .modal-nav { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 0; border-top: 1px solid var(--border-light); flex-shrink: 0; }
+  .nav-btn { display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; color: var(--text-muted); cursor: pointer; transition: all .15s; }
   .nav-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
   .nav-btn:disabled { opacity: .35; cursor: not-allowed; }
   .nav-btn svg { width: 13px; height: 13px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
   .nav-pos { font-size: 12px; color: var(--text-muted); }
-
-  /* Product image panel */
-  .img-panel {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius-lg); overflow: hidden;
-    display: flex; flex-direction: column;
-  }
+  .img-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: column; }
   .img-panel .panel-head { padding: 10px 14px; font-size: 12px; font-weight: 600; border-bottom: 1px solid var(--border-light); flex-shrink: 0; }
   .img-panel img { width: 100%; flex: 1; display: block; object-fit: contain; min-height: 0; background: var(--surface2); }
   .img-panel .img-placeholder { flex: 1; padding: 24px; text-align: center; color: var(--text-hint); font-size: 13px; background: var(--surface2); }
@@ -332,6 +290,8 @@
     main { padding: 20px 16px 48px; }
     #modal-overlay { padding: 8px; }
     .modal { height: 100vh; max-height: 100vh; border-radius: 12px; }
+    .podium-stage { gap: 8px; padding: 0; }
+    .podium-avg { font-size: 22px; }
   }
 </style>
 </head>
@@ -360,14 +320,12 @@
 
 <main>
 
-  <!-- Loading -->
   <div id="loading-screen">
     <div class="big-spinner"></div>
     <div class="loading-label">Loading training data…</div>
-    <div class="loading-sub">Fetching all 5 slides from Google Sheets</div>
+    <div class="loading-sub">Fetching all slides from Google Sheets</div>
   </div>
 
-  <!-- Error -->
   <div id="error-screen">
     <div class="err-icon">⚠️</div>
     <h3>Could not load data</h3>
@@ -375,8 +333,17 @@
     <button class="retry-btn" onclick="init()">Try again</button>
   </div>
 
-  <!-- Dashboard -->
   <div id="dashboard">
+
+    <!-- Podium -->
+    <div class="podium-section">
+      <div class="podium-section-head">
+        <h2>Team Rankings</h2>
+        <p>Based on average team score</p>
+      </div>
+      <div class="podium-stage" id="podium-stage"></div>
+      <div class="podium-floor"></div>
+    </div>
 
     <div class="section-head">
       <h2>Question Performance Rankings</h2>
@@ -409,7 +376,6 @@
 <!-- Modal -->
 <div id="modal-overlay" onclick="handleOverlayClick(event)">
   <div class="modal" id="modal">
-
     <div class="modal-header">
       <div class="modal-rank" id="m-rank"></div>
       <div class="modal-title-wrap">
@@ -418,7 +384,6 @@
       </div>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
-
     <div class="modal-body">
       <div class="score-banner">
         <div class="score-tile avg">
@@ -437,7 +402,6 @@
           <div class="tile-sub">responses</div>
         </div>
       </div>
-
       <div class="modal-cols no-image" id="modal-cols">
         <div class="panel">
           <div class="panel-head">Response distribution</div>
@@ -449,7 +413,7 @@
         </div>
         <div class="panel">
           <div class="panel-head">Option breakdown</div>
-          <table class="bk-table" id="m-table">
+          <table class="bk-table">
             <thead><tr><th>Option</th><th class="r">Count</th><th class="r">Share</th></tr></thead>
             <tbody id="m-tbody"></tbody>
           </table>
@@ -459,7 +423,6 @@
           <div id="img-container"></div>
         </div>
       </div>
-
       <div class="modal-nav">
         <button class="nav-btn" id="nav-prev" onclick="navModal(-1)">
           <svg viewBox="0 0 14 14"><path d="M9 2L4 7l5 5"/></svg>
@@ -472,54 +435,56 @@
         </button>
       </div>
     </div>
-
   </div>
 </div>
 
 <script>
-/* ── Config ── */
 const SHEET_ID = '1aCfh1gBU88zDzxON2iQAuyQIiuvN2NrXTKGQWAoa2lc';
 
 const SLIDES = [
-  {
-    name:'Drag_and_Drop_1', label:'Slide 1 – Actives', color:'#6366f1',
-    choices:['Glycolic','Salicylic','Retinol','Licorice']
-  },
-  {
-    name:'Drag_and_Drop_2', label:'Slide 2 – Soothers', color:'#0ea5e9',
-    choices:['Centella','Niacinamide','Enoxolone','Tea Tree']
-  },
-  {
-    name:'Drag_and_Drop_3', label:'Slide 3 – Treatments', color:'#f59e0b',
-    choices:['Sulfur','Zinc','Hyaluronic','Urea']
-  },
-  {
-    name:'Drag_and_Drop_4', label:'Slide 4 – Barrier', color:'#10b981',
-    choices:['Ceramides','Squalane','Pertolatum','Silicones']
-  },
-  {
-    name:'Drag_and_Drop_5', label:'Slide 5 – Brighteners', color:'#ec4899',
-    choices:['Vitamin C','Azelaic Acid','Alpha Arbutin','Peptides']
-  }
+  { name:'Drag_and_Drop_1', label:'Slide 1 – Actives',    color:'#6366f1', choices:['Glycolic','Salicylic','Retinol','Licorice'] },
+  { name:'Drag_and_Drop_2', label:'Slide 2 – Soothers',   color:'#0ea5e9', choices:['Centella','Niacinamide','Enoxolone','Tea Tree'] },
+  { name:'Drag_and_Drop_3', label:'Slide 3 – Treatments', color:'#f59e0b', choices:['Sulfur','Zinc','Hyaluronic','Urea'] },
+  { name:'Drag_and_Drop_4', label:'Slide 4 – Barrier',    color:'#10b981', choices:['Ceramides','Squalane','Pertolatum','Silicones'] },
+  { name:'Drag_and_Drop_5', label:'Slide 5 – Brighteners',color:'#ec4899', choices:['Vitamin C','Azelaic Acid','Alpha Arbutin','Peptides'] }
 ];
 
-/* ── State ── */
-let sortedRows = [];
-let modalIdx = null;
-let modalChart = null;
-let imageMap = {};
+const ALIAS = {
+  'alpha arbutin':'Alpha Arbutin', 'azelaic acid':'Azelaic Acid',
+  'centella':'Centella',           'ceramides':'Ceramides',
+  'enoxolone':'Enoxolone',         'glycolic':'Glycolic',
+  'hyaluronic':'Hyaluronic',       'licor':'Licorice',
+  'niacinamed':'Niacinamide',      'peptides':'Peptides',
+  'pertolatum':'Pertolatum',       'retinol':'Retinol',
+  'sali':'Salicylic',              'silicones':'Silicones',
+  'squalane':'Squalane',           'sulfur':'Sulfur',
+  'tea tree oil':'Tea Tree',       'urea':'Urea',
+  'vitamin c':'Vitamin C',         'zinc':'Zinc',
+};
 
-/* ── Helpers ── */
-const $= id => document.getElementById(id);
+const ALIAS_IMG = {
+  'alpha arbutin':'alpha arbutin', 'azelaic acid':'azelaic acid',
+  'centella':'centella',           'ceramides':'ceramides',
+  'enoxolone':'enoxolone',         'glycolic':'glycolic',
+  'hyaluronic':'hyaluronic',       'licor':'licorice',
+  'niacinamed':'niacinamide',      'peptides':'peptides',
+  'pertolatum':'pertolatum',       'retinol':'retinol',
+  'sali':'salicylic',              'silicones':'silicones',
+  'squalane':'squalane',           'sulfur':'sulfur',
+  'tea tree oil':'tea tree',       'urea':'urea',
+  'vitamin c':'vitamin c',         'zinc':'zinc',
+};
+
+let sortedRows = [], modalIdx = null, modalChart = null, imageMap = {};
+
+const $ = id => document.getElementById(id);
 const esc = s => { const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; };
 
-/* ── Fetch via opensheet ── */
+/* ── Fetch slide ── */
 async function fetchSlide(slide, si){
-  const url = `https://opensheet.elk.sh/${SHEET_ID}/${encodeURIComponent(slide.name)}`;
-  const resp = await fetch(url);
+  const resp = await fetch(`https://opensheet.elk.sh/${SHEET_ID}/${encodeURIComponent(slide.name)}`);
   if(!resp.ok) throw new Error(`Tab "${slide.name}" returned ${resp.status}`);
   const data = await resp.json();
-  if(data[0])
   return data.slice(0,4).map((row,qi)=>{
     const rkeys = Object.keys(row);
     const find = (...names) => {
@@ -531,82 +496,24 @@ async function fetchSlide(slide, si){
     };
     const cc={};
     slide.choices.forEach(c=>{
-      /* Try exact match first, then case-insensitive fallback */
       const k = rkeys.find(k=>k.trim()===c) || rkeys.find(k=>k.trim().toLowerCase()===c.toLowerCase());
       const raw = k ? row[k] : undefined;
-      cc[c] = (raw !== undefined && raw !== '') ? (parseInt(raw)||0) : 0;
+      cc[c] = (raw!==undefined && raw!=='') ? (parseInt(raw)||0) : 0;
     });
     const sumC = parseInt(find('Sum Correct','SumCorrect'))||0;
     const sumW = parseInt(find('Sum Wrong','SumWrong'))||0;
-    /* Average may be stored as "50%" — strip the % sign before parsing */
     const avg  = parseFloat((find('Average')||'0').toString().replace('%',''))||0;
-    /* Strip _Drop / _drop suffix from raw correct answer value */
     const rawCorrect = find('Correct Answer','CorrectAnswer','correct_answer','correct').trim();
     const stripped = rawCorrect.replace(/_drop$/i,'').replace(/_+$/,'').trim().toLowerCase();
-
-    /* Known abbreviations/typos in the sheet mapped to exact choice names */
-    /* Complete map: every raw correct answer value (lowercased, _drop stripped) -> exact choice name */
-    const ALIAS = {
-      'alpha arbutin': 'Alpha Arbutin',
-      'azelaic acid':  'Azelaic Acid',
-      'centella':      'Centella',
-      'ceramides':     'Ceramides',
-      'enoxolone':     'Enoxolone',
-      'glycolic':      'Glycolic',
-      'hyaluronic':    'Hyaluronic',
-      'licor':         'Licorice',
-      'niacinamed':    'Niacinamide',
-      'peptides':      'Peptides',
-      'pertolatum':    'Pertolatum',
-      'retinol':       'Retinol',
-      'sali':          'Salicylic',
-      'silicones':     'Silicones',
-      'squalane':      'Squalane',
-      'sulfur':        'Sulfur',
-      'tea tree oil':  'Tea Tree',
-      'urea':          'Urea',
-      'vitamin c':     'Vitamin C',
-      'zinc':          'Zinc',
-    };
-
-    const resolved = ALIAS[stripped]
-      || slide.choices.find(c => c.toLowerCase() === stripped)
-      || slide.choices[qi];
-    const correct = resolved;
-    const text = correct;
-    return { si, label:slide.label, color:slide.color, qi,
-      text, choices:slide.choices, cc, correct, sumC, sumW, avg };
+    const correct = ALIAS[stripped] || slide.choices.find(c=>c.toLowerCase()===stripped) || slide.choices[qi];
+    return { si, label:slide.label, color:slide.color, qi, text:correct, choices:slide.choices, cc, correct, sumC, sumW, avg };
   });
 }
 
-/* ── Fetch images tab ── */
+/* ── Fetch images ── */
 async function fetchImages(){
-  /* Strip _drop suffix then map to canonical lowercase choice names (mirrors fetchSlide ALIAS) */
-  const ALIAS = {
-    'alpha arbutin': 'alpha arbutin',
-    'azelaic acid':  'azelaic acid',
-    'centella':      'centella',
-    'ceramides':     'ceramides',
-    'enoxolone':     'enoxolone',
-    'glycolic':      'glycolic',
-    'hyaluronic':    'hyaluronic',
-    'licor':         'licorice',
-    'niacinamed':    'niacinamide',
-    'peptides':      'peptides',
-    'pertolatum':    'pertolatum',
-    'retinol':       'retinol',
-    'sali':          'salicylic',
-    'silicones':     'silicones',
-    'squalane':      'squalane',
-    'sulfur':        'sulfur',
-    'tea tree oil':  'tea tree',
-    'urea':          'urea',
-    'vitamin c':     'vitamin c',
-    'zinc':          'zinc',
-  };
   try{
-    const url = `https://opensheet.elk.sh/${SHEET_ID}/Images`;
-    const resp = await fetch(url);
+    const resp = await fetch(`https://opensheet.elk.sh/${SHEET_ID}/Images`);
     if(!resp.ok) return;
     const data = await resp.json();
     data.forEach(row=>{
@@ -614,13 +521,80 @@ async function fetchImages(){
       const pKey = rkeys.find(k=>k.trim().toLowerCase()==='product');
       const lKey = rkeys.find(k=>k.trim().toLowerCase()==='link');
       if(pKey && lKey && row[pKey] && row[lKey]){
-        const stripped = row[pKey].trim().toLowerCase()
-          .replace(/_drop$/i,'').replace(/_+$/,'').trim();
-        const canonical = ALIAS[stripped] || stripped;
-        imageMap[canonical] = row[lKey].trim();
+        const stripped = row[pKey].trim().toLowerCase().replace(/_drop$/i,'').replace(/_+$/,'').trim();
+        imageMap[ALIAS_IMG[stripped]||stripped] = row[lKey].trim();
       }
     });
-  } catch(e){ console.warn('[Images] error:', e); }
+  } catch(e){ console.warn('[Images] error:',e); }
+}
+
+/* ── Fetch scores ── */
+async function fetchScores(){
+  try{
+    const resp = await fetch(`https://opensheet.elk.sh/${SHEET_ID}/Score`);
+    if(!resp.ok) return [];
+    const data = await resp.json();
+    return data.map(row=>{
+      const rkeys = Object.keys(row);
+      const find = (...names) => {
+        for(const n of names){
+          const k = rkeys.find(k=>k.trim().toLowerCase()===n.toLowerCase());
+          if(k && row[k]!==undefined && row[k]!=='') return row[k];
+        }
+        return '';
+      };
+      return {
+        team:       find('Team Name','TeamName','team name','team').trim(),
+        scored:     parseFloat(find('TotalScored','Total Scored','totalscored'))||0,
+        fullScore:  parseFloat(find('FullScore','Full Score','fullscore'))||0,
+        avg:        parseFloat((find('AverageTeam','Average Team','Average')||'0').toString().replace('%',''))||0,
+      };
+    }).filter(r=>r.team);
+  } catch(e){ console.warn('[Score] error:',e); return []; }
+}
+
+/* ── Render podium ── */
+function renderPodium(teams){
+  const stage = $('podium-stage');
+  if(!teams || !teams.length){ stage.closest('.podium-section').style.display='none'; return; }
+
+  /* Sort by avg descending */
+  const ranked = [...teams].sort((a,b)=>b.avg-a.avg);
+
+  /* Reorder for visual podium: 2nd, 1st, 3rd, 4th */
+  const display = ranked.length >= 3
+    ? [ranked[1], ranked[0], ranked[2], ...ranked.slice(3)]
+    : ranked;
+
+  const crowns = [ `<svg width="34" height="26" viewBox="0 0 34 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M3 22 L7 8 L13.5 16 L17 3 L20.5 16 L27 8 L31 22 Z" fill="#fbbf24" stroke="#d97706" stroke-width="1.3" stroke-linejoin="round"/>
+    <rect x="3" y="22" width="28" height="3.5" rx="1.75" fill="#d97706"/>
+    <circle cx="17"  cy="3.5" r="2.2" fill="#fff" stroke="#d97706" stroke-width="1.2"/>
+    <circle cx="7"   cy="8.5" r="1.8" fill="#fff" stroke="#d97706" stroke-width="1.2"/>
+    <circle cx="27"  cy="8.5" r="1.8" fill="#fff" stroke="#d97706" stroke-width="1.2"/>
+  </svg>`
+,'🥈','🥉',''];
+  const rankOf = t => ranked.indexOf(t); /* 0-based rank in sorted order */
+
+  stage.innerHTML = display.map(team => {
+    const rk = rankOf(team) + 1; /* 1-based */
+    const crown = crowns[rk-1] || '';
+    const avgColor = rk===1?'#b45309':rk===2?'#475569':rk===3?'#92400e':'var(--text-muted)';
+    return `
+      <div class="podium-item rank-${rk}">
+        <div class="podium-card">
+          ${crown ? `<div class="podium-crown">${crown}</div>` : ''}
+          <div class="podium-team">${esc(team.team)}</div>
+          <div class="podium-avg" style="color:${avgColor}">${team.avg.toFixed(1)}%</div>
+          <div class="podium-sub">average score</div>
+          <div class="podium-scores">
+            <span class="podium-pill scored">${team.scored} pts</span>
+            <span class="podium-pill full">/ ${team.fullScore}</span>
+          </div>
+        </div>
+        <div class="podium-block">${rk}</div>
+      </div>`;
+  }).join('');
 }
 
 /* ── Init ── */
@@ -628,53 +602,36 @@ async function init(){
   $('loading-screen').style.display='flex';
   $('error-screen').style.display='none';
   $('dashboard').className='';
-  imageMap = {};
+  imageMap={};
   try{
-    const [slideResults] = await Promise.all([
+    const [slideResults,, scores] = await Promise.all([
       Promise.all(SLIDES.map((s,i)=>fetchSlide(s,i))),
-      fetchImages()
+      fetchImages(),
+      fetchScores()
     ]);
-    const allRows = slideResults.flat();
-    sortedRows = [...allRows].sort((a,b)=>a.avg-b.avg);
+    sortedRows = slideResults.flat().sort((a,b)=>a.avg-b.avg);
+    renderPodium(scores);
     render();
     $('loading-screen').style.display='none';
     $('dashboard').className='on';
   } catch(e){
     $('loading-screen').style.display='none';
     $('error-screen').style.display='block';
-    $('error-msg').textContent = e.message || 'Unknown error.';
+    $('error-msg').textContent = e.message||'Unknown error.';
   }
 }
 
 /* ── Render dashboard ── */
 function render(){
-  const totC = sortedRows.reduce((s,r)=>s+r.sumC,0);
-  const totW = sortedRows.reduce((s,r)=>s+r.sumW,0);
-  const avg  = sortedRows.reduce((s,r)=>s+r.avg,0)/sortedRows.length;
-  const worst = sortedRows[0];
-
+  const totC=sortedRows.reduce((s,r)=>s+r.sumC,0);
+  const totW=sortedRows.reduce((s,r)=>s+r.sumW,0);
+  const avg=sortedRows.reduce((s,r)=>s+r.avg,0)/sortedRows.length;
+  const worst=sortedRows[0];
   $('stats-grid').innerHTML=`
-    <div class="stat-card">
-      <div class="stat-label">Total Questions</div>
-      <div class="stat-value">${sortedRows.length}</div>
-      <div class="stat-sub">across 5 slides</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Total Correct</div>
-      <div class="stat-value" style="color:var(--green)">${totC.toLocaleString()}</div>
-      <div class="stat-sub">answers</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Total Wrong</div>
-      <div class="stat-value" style="color:var(--red)">${totW.toLocaleString()}</div>
-      <div class="stat-sub">answers</div>
-    </div>
-    <div class="stat-card" style="border-color:var(--red);background:var(--red-bg)">
-      <div class="stat-label">Overall Average</div>
-      <div class="stat-value" style="color:var(--red)">${avg.toFixed(1)}%</div>
-      <div class="stat-sub">weakest: ${worst?worst.avg.toFixed(1)+'%':'—'}</div>
-    </div>`;
-
+    <div class="stat-card"><div class="stat-label">Total Questions</div><div class="stat-value">${sortedRows.length}</div><div class="stat-sub">across 5 slides</div></div>
+    <div class="stat-card"><div class="stat-label">Total Correct</div><div class="stat-value" style="color:var(--green)">${totC.toLocaleString()}</div><div class="stat-sub">answers</div></div>
+    <div class="stat-card"><div class="stat-label">Total Wrong</div><div class="stat-value" style="color:var(--red)">${totW.toLocaleString()}</div><div class="stat-sub">answers</div></div>
+    <div class="stat-card" style="border-color:var(--red);background:var(--red-bg)"><div class="stat-label">Overall Average</div><div class="stat-value" style="color:var(--red)">${avg.toFixed(1)}%</div><div class="stat-sub">weakest: ${worst?worst.avg.toFixed(1)+'%':'—'}</div></div>`;
   const tbody=$('tbody'); tbody.innerHTML='';
   sortedRows.forEach((row,rank)=>{
     const pct=Math.max(0,Math.min(100,row.avg));
@@ -687,173 +644,69 @@ function render(){
       <td><span class="slide-tag"><span class="slide-dot" style="background:${row.color}"></span>${esc(row.label)}</span></td>
       <td class="r" style="color:var(--green);font-weight:600">${row.sumC}</td>
       <td class="r" style="color:var(--red);font-weight:600">${row.sumW}</td>
-      <td>
-        <div class="bar-wrap">
-          <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${bc}"></div></div>
-          <span class="bar-val" style="color:${bc}">${pct.toFixed(1)}%</span>
-        </div>
-      </td>
-      <td><span class="arrow-icon">
-        <svg viewBox="0 0 16 16"><path d="M6 4l4 4-4 4"/></svg>
-      </span></td>`;
+      <td><div class="bar-wrap"><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${bc}"></div></div><span class="bar-val" style="color:${bc}">${pct.toFixed(1)}%</span></div></td>
+      <td><span class="arrow-icon"><svg viewBox="0 0 16 16"><path d="M6 4l4 4-4 4"/></svg></span></td>`;
     tr.addEventListener('click',()=>openModal(rank));
     tbody.appendChild(tr);
   });
 }
 
 /* ── Modal ── */
-function openModal(rank){
-  modalIdx=rank;
-  populateModal();
-  $('modal-overlay').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-
-function closeModal(){
-  $('modal-overlay').classList.remove('open');
-  document.body.style.overflow='';
-  if(modalChart){ modalChart.destroy(); modalChart=null; }
-}
-
-function handleOverlayClick(e){
-  if(e.target===$('modal-overlay')) closeModal();
-}
-
-function navModal(dir){
-  const next = modalIdx+dir;
-  if(next<0||next>=sortedRows.length) return;
-  if(modalChart){ modalChart.destroy(); modalChart=null; }
-  modalIdx=next;
-  populateModal();
-}
+function openModal(rank){ modalIdx=rank; populateModal(); $('modal-overlay').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(){ $('modal-overlay').classList.remove('open'); document.body.style.overflow=''; if(modalChart){modalChart.destroy();modalChart=null;} }
+function handleOverlayClick(e){ if(e.target===$('modal-overlay')) closeModal(); }
+function navModal(dir){ const next=modalIdx+dir; if(next<0||next>=sortedRows.length) return; if(modalChart){modalChart.destroy();modalChart=null;} modalIdx=next; populateModal(); }
 
 function populateModal(){
-  const row=sortedRows[modalIdx];
-  const rank=modalIdx;
-  const total=row.sumC+row.sumW;
-
-  /* Header */
+  const row=sortedRows[modalIdx]; const rank=modalIdx; const total=row.sumC+row.sumW;
   const rc=rank===0?'r1':rank===1?'r2':rank===2?'r3':'';
-  $('m-rank').className='modal-rank '+rc;
-  $('m-rank').textContent=rank+1;
+  $('m-rank').className='modal-rank '+rc; $('m-rank').textContent=rank+1;
   $('m-q').textContent=row.text;
-  $('m-meta').innerHTML=`
-    <span class="slide-tag"><span class="slide-dot" style="background:${row.color}"></span>${esc(row.label)}</span>
-    <span style="font-size:12px;color:var(--text-hint)">Question ${row.qi+1} of 4</span>`;
-
-  /* Scores */
+  $('m-meta').innerHTML=`<span class="slide-tag"><span class="slide-dot" style="background:${row.color}"></span>${esc(row.label)}</span><span style="font-size:12px;color:var(--text-hint)">Question ${row.qi+1} of 4</span>`;
   const pct=Math.max(0,Math.min(100,row.avg));
   const bc=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
-  $('m-avg').textContent=pct.toFixed(1)+'%';
-  $('m-avg').style.color=bc;
-  $('m-correct').textContent=row.sumC;
-  $('m-wrong').textContent=row.sumW;
-
-  /* All 4 options in original slide order — correct answer highlighted */
-  const opts=row.choices.map(c=>({
-    name:c, count:row.cc[c]||0,
-    pct:total>0?(((row.cc[c]||0)/total)*100).toFixed(1):'0.0',
-    isCorrect:c===row.correct
-  }));
-
-  /* Breakdown table */
+  $('m-avg').textContent=pct.toFixed(1)+'%'; $('m-avg').style.color=bc;
+  $('m-correct').textContent=row.sumC; $('m-wrong').textContent=row.sumW;
+  const opts=row.choices.map(c=>({ name:c, count:row.cc[c]||0, pct:total>0?(((row.cc[c]||0)/total)*100).toFixed(1):'0.0', isCorrect:c===row.correct }));
   $('m-tbody').innerHTML=opts.map(o=>`
     <tr class="${o.isCorrect?'correct-row':''}">
-      <td>${o.isCorrect
-        ?`<span class="correct-badge"><svg viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5"/></svg>${esc(o.name)}</span>`
-        :esc(o.name)}
-      </td>
+      <td>${o.isCorrect?`<span class="correct-badge"><svg viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5"/></svg>${esc(o.name)}</span>`:esc(o.name)}</td>
       <td class="r" style="font-weight:600;color:${o.isCorrect?'var(--green)':'var(--text)'}">${o.count}</td>
       <td class="r" style="color:var(--text-muted)">${o.pct}%</td>
     </tr>`).join('');
-
-  /* Nav */
-  $('nav-prev').disabled=rank===0;
-  $('nav-next').disabled=rank===sortedRows.length-1;
+  $('nav-prev').disabled=rank===0; $('nav-next').disabled=rank===sortedRows.length-1;
   $('nav-pos').textContent=`${rank+1} of ${sortedRows.length}`;
-
-  /* Product image — look up by correct answer name (lowercase) */
-  /* Image lookup — direct match on correct answer name (lowercase) */
-  const correctLower = row.correct.trim().toLowerCase();
-  const imgUrl = imageMap[correctLower] || null;
-  const imgPanel = $('img-panel');
-  const imgCols  = $('modal-cols');
+  const imgUrl=imageMap[row.correct.trim().toLowerCase()]||null;
+  const imgPanel=$('img-panel'); const imgCols=$('modal-cols');
   if(imgUrl){
-    $('img-panel-head').textContent = row.correct + ' — Product Label';
-    $('img-container').innerHTML = `<img src="${imgUrl}" alt="${esc(row.correct)} product label" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'img-placeholder\'>Image could not be loaded.</div>'"/>`;
-    imgPanel.style.display='';
-    imgCols.className='modal-cols with-image';
-  } else {
-    imgPanel.style.display='none';
-    imgCols.className='modal-cols no-image';
-  }
-
-  /* Chart — wait for canvas to be in DOM */
-  if(modalChart){ modalChart.destroy(); modalChart=null; }
+    $('img-panel-head').textContent=row.correct+' — Product Label';
+    $('img-container').innerHTML=`<img src="${imgUrl}" alt="${esc(row.correct)}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'img-placeholder\'>Image could not be loaded.</div>'"/>`;
+    imgPanel.style.display=''; imgCols.className='modal-cols with-image';
+  } else { imgPanel.style.display='none'; imgCols.className='modal-cols no-image'; }
+  if(modalChart){modalChart.destroy();modalChart=null;}
   requestAnimationFrame(()=>buildModalChart(row,opts,total));
 }
 
-function buildModalChart(row, opts, total){
+function buildModalChart(row,opts,total){
   const cv=$('m-chart'); if(!cv) return;
-
-  /* Always render all 4 choices in their original slide order */
-  const all4 = row.choices.map(c=>({
-    name: c,
-    count: row.cc[c]||0,
-    isCorrect: c===row.correct
-  }));
-
+  const all4=row.choices.map(c=>({ name:c, count:row.cc[c]||0, isCorrect:c===row.correct }));
   modalChart=new Chart(cv,{
     type:'bar',
-    data:{
-      labels: all4.map(o=>o.name),
-      datasets:[{
-        data: all4.map(o=>o.count),
-        backgroundColor: all4.map(o=>o.isCorrect?'rgba(22,163,74,0.82)':'rgba(220,38,38,0.55)'),
-        borderColor:     all4.map(o=>o.isCorrect?'rgba(22,163,74,1)':'rgba(220,38,38,0.8)'),
-        borderWidth: 1,
-        borderRadius: 6,
-        barThickness: 30,
-        minBarLength: 0
-      }]
-    },
-    options:{
-      indexAxis:'y', responsive:true, maintainAspectRatio:false,
-      plugins:{
-        legend:{display:false},
-        tooltip:{
-          callbacks:{
-            label(ctx){
-              const p=total>0?((ctx.raw/total)*100).toFixed(1):0;
-              return ` ${ctx.raw} responses (${p}%)`;
-            }
-          }
-        }
-      },
-      scales:{
-        x:{
-          beginAtZero:true, min:0,
-          grid:{color:'rgba(0,0,0,0.05)'},
-          ticks:{font:{family:'DM Sans',size:11},color:'#6b6860',stepSize:1,precision:0}
-        },
-        y:{
-          grid:{display:false},
-          ticks:{font:{family:'DM Sans',size:12},color:'#1a1917'}
-        }
-      }
+    data:{ labels:all4.map(o=>o.name), datasets:[{ data:all4.map(o=>o.count), backgroundColor:all4.map(o=>o.isCorrect?'rgba(22,163,74,0.82)':'rgba(220,38,38,0.55)'), borderColor:all4.map(o=>o.isCorrect?'rgba(22,163,74,1)':'rgba(220,38,38,0.8)'), borderWidth:1, borderRadius:6, barThickness:30, minBarLength:0 }]},
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label(ctx){ const p=total>0?((ctx.raw/total)*100).toFixed(1):0; return ` ${ctx.raw} responses (${p}%)`; } } } },
+      scales:{ x:{ beginAtZero:true, min:0, grid:{color:'rgba(0,0,0,0.05)'}, ticks:{font:{family:'DM Sans',size:11},color:'#6b6860',stepSize:1,precision:0} }, y:{ grid:{display:false}, ticks:{font:{family:'DM Sans',size:12},color:'#1a1917'} } }
     }
   });
 }
 
-/* ── Keyboard nav ── */
 document.addEventListener('keydown',e=>{
   if(!$('modal-overlay').classList.contains('open')) return;
   if(e.key==='Escape') closeModal();
   if(e.key==='ArrowRight'||e.key==='ArrowDown') navModal(1);
-  if(e.key==='ArrowLeft' ||e.key==='ArrowUp')   navModal(-1);
+  if(e.key==='ArrowLeft' ||e.key==='ArrowUp') navModal(-1);
 });
 
-/* ── Boot ── */
 init();
 </script>
 </body>
