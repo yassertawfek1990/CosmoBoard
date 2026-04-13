@@ -105,6 +105,7 @@
     flex: 1;
     max-width: 220px;
     animation: podiumRise .5s ease both;
+    gap: 3px;
   }
   .podium-item:nth-child(1) { animation-delay: .1s; }
   .podium-item:nth-child(2) { animation-delay: 0s; }
@@ -153,16 +154,18 @@
   }
 
   .podium-scores {
-    display: flex; gap: 6px; justify-content: center;
+    display: flex; gap: 6px; justify-content: center; flex-direction: column;
   }
 
   .podium-pill {
     font-size: 11px; font-weight: 500;
     padding: 2px 8px; border-radius: 20px;
   }
-  .podium-pill.scored { background: #dcfce7; color: var(--green); border: 1px solid #86efac; }
-  .podium-pill.full   { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
+  .podium-pill.scored20 { background: #dcfce7; color: var(--green); border: 1px solid #86efac; }
+  .podium-pill.full20   { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
 
+ .podium-pill.scored { background: #c1e0ff; color: #035984; border: 1px solid #77bfe3; }
+  .podium-pill.full   { background: #dae2eb; color: var(--text-muted); border: 1px solid var(--border); }
   /* The actual block / step */
   .podium-block {
     width: 100%;
@@ -587,10 +590,16 @@ function renderPodium(teams){
           <div class="podium-team">${esc(team.team)}</div>
           <div class="podium-avg" style="color:${avgColor}">${team.avg.toFixed(1)}%</div>
           <div class="podium-sub">average score</div>
-          <div class="podium-scores">
-            <span class="podium-pill scored">${team.scored} pts</span>
-            <span class="podium-pill full">/ ${team.fullScore}</span>
+       <div class="podium-scores">
+        <div>
+            <span class="podium-pill scored20">${Math.round(team.avg * 20/100)} pts</span> /
+            <span class="podium-pill full20"> 20</span>
           </div>
+          <div>
+            <span class="podium-pill scored">${team.scored} pts</span> /
+            <span class="podium-pill full"> ${team.fullScore}</span>
+          </div>
+        </div>
         </div>
         <div class="podium-block">${rk}</div>
       </div>`;
