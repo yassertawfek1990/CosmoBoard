@@ -153,6 +153,11 @@
     margin-bottom: 8px;
   }
 
+  .podium-subs {
+    font-size: 11px; color: var(--text-hint);
+    margin-bottom: 2px;
+  }
+
   .podium-scores {
     display: flex; gap: 6px; justify-content: center; flex-direction: column;
   }
@@ -592,10 +597,16 @@ function renderPodium(teams){
           <div class="podium-sub">average score</div>
        <div class="podium-scores">
         <div>
+          <div  class="podium-subs">
+          Avg Pts
+          </div>
             <span class="podium-pill scored20">${Math.round(team.avg * 20/100)} pts</span> /
             <span class="podium-pill full20"> 20</span>
           </div>
           <div>
+            <div  class="podium-subs">
+            Total Pts
+            </div>
             <span class="podium-pill scored">${team.scored} pts</span> /
             <span class="podium-pill full"> ${team.fullScore}</span>
           </div>
